@@ -272,4 +272,6 @@ Rope.prototype.charCodeAt = function(position) {
   return this.substring(position, position + 1).charCodeAt(0);
 }
 
-module.exports = Rope;
+if(module) {
+  module.exports = Rope;
+}
