@@ -49,13 +49,13 @@ function adjust() {
   if (typeof this._value != 'undefined') {
     if (this.length > Rope.SPLIT_LENGTH) {
       var divide = Math.floor(this.length / 2);
-      this._left = new Rope(this._value.substring(0, divide));
-      this._right = new Rope(this._value.substring(divide));
+      this._left = new Rope(this._value.slice(0, divide));
+      this._right = new Rope(this._value.slice(divide));
       delete this._value;
     }
   } else {
     if (this.length < Rope.JOIN_LENGTH) {
-      this._value = this._left.toString() + this._right.toString();
+      this._value = this._left.concat(this._right);
       delete this._left;
       delete this._right;
     }
@@ -72,13 +72,13 @@ Rope.prototype.toString = function() {
   if (typeof this._value != 'undefined') {
     return this._value;
   } else {
-    return this._left.toString() + this._right.toString();
+    return this._left.concat(this._right);
   }
 }
 
 /**
  * Removes text from the rope between the `start` and `end` positions.
- * The character at `start` gets removed, but the character at `end` is 
+ * The character at `start` gets removed, but the character at `end` is
  * not removed.
  *
  * @param {Number} start - Initial position (inclusive)
@@ -87,11 +87,12 @@ Rope.prototype.toString = function() {
  */
 
 Rope.prototype.remove = function(start, end) {
+  if (!end) end = this.length;
   if (start < 0 || start > this.length) throw new RangeError('Start is not within rope bounds.');
   if (end < 0 || end > this.length) throw new RangexError('End is not within rope bounds.');
   if (start > end) throw new RangexError('Start is greater than end.');
   if (typeof this._value != 'undefined') {
-    this._value = this._value.substring(0, start) + this._value.substring(end);
+    this._value = this._value.slice(0, start).concat(this._value.slice(end));
     this.length = this._value.length;
   } else {
     var leftLength = this._left.length;
@@ -120,12 +121,9 @@ Rope.prototype.remove = function(start, end) {
  */
 
 Rope.prototype.insert = function(position, value) {
-  if (typeof value != 'string') {
-    value = value.toString();
-  }
   if (position < 0 || position > this.length) throw new RangeError('position is not within rope bounds.');
   if (typeof this._value != 'undefined') {
-    this._value = this._value.substring(0, position) + value.toString() + this._value.substring(position);
+    this._value = this._value.slice(0, position).concat([value], this._value.slice(position));
     this.length = this._value.length;
   } else {
     var leftLength = this._left.length;
@@ -147,7 +145,7 @@ Rope.prototype.insert = function(position, value) {
 
 Rope.prototype.rebuild = function() {
   if (typeof this._value == 'undefined') {
-    this._value = this._left.toString() + this._right.toString();
+    this._value = this._left.concat(this._right);
     delete this._left;
     delete this._right;
     adjust.call(this);
@@ -174,7 +172,7 @@ Rope.prototype.rebalance = function() {
 
 /**
  * Returns text from the rope between the `start` and `end` positions.
- * The character at `start` gets returned, but the character at `end` is 
+ * The character at `start` gets returned, but the character at `end` is
  * not returned.
  *
  * @param {Number} start - Initial position (inclusive)
@@ -197,7 +195,7 @@ Rope.prototype.substring = function(start, end) {
     end = this.length;
   }
   if (typeof this._value != 'undefined') {
-    return this._value.substring(start, end);
+    return this._value.slice(start, end);
   } else {
     var leftLength = this._left.length;
     var leftStart = Math.min(start, leftLength);
@@ -208,13 +206,13 @@ Rope.prototype.substring = function(start, end) {
 
     if (leftStart != leftEnd) {
       if (rightStart != rightEnd) {
-        return this._left.substring(leftStart, leftEnd) + this._right.substring(rightStart, rightEnd);
+        return this._left.slice(leftStart, leftEnd).concat(this._right.slice(rightStart, rightEnd));
       } else {
-        return this._left.substring(leftStart, leftEnd);
+        return this._left.slice(leftStart, leftEnd);
       }
     } else {
-      if (rightStart != rightEnd) {      
-        return this._right.substring(rightStart, rightEnd);
+      if (rightStart != rightEnd) {
+        return this._right.slice(rightStart, rightEnd);
       } else {
         return '';
       }
