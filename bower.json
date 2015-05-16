@@ -1,0 +1,27 @@
+{
+  "name": "rope",
+  "main": "index.js",
+  "version": "0.0.2",
+  "homepage": "https://github.com/korczis/rope",
+  "authors": [
+    "Tomas Korcak <korczis@gmail.com>"
+  ],
+  "description": "Implementation of the rope data structure in JavaScript",
+  "keywords": [
+    "rope",
+    "data",
+    "structures",
+    "algorithms"
+  ],
+  "license": "MIT",
+  "main": [
+    "index.js"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
