@@ -272,6 +272,6 @@ Rope.prototype.charCodeAt = function(position) {
   return this.substring(position, position + 1).charCodeAt(0);
 }
 
-if(module) {
+if (typeof module !== 'undefined') {
   module.exports = Rope;
 }
